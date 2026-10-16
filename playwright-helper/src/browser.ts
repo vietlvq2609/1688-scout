@@ -1,9 +1,10 @@
-// Singleton Playwright Chromium launcher + scan context factory.
+// Singleton Playwright Chrome launcher + scan context factory.
 // The browser is launched lazily on the first getBrowser() call — never at
-// import time and never in tests (tests do not import this module).
+// import time and never in tests (tests never reach this module's launch).
 import { chromium } from 'playwright';
 import type { Browser, BrowserContext } from 'playwright';
-import { loadAuthState } from './auth.js';
+import type { ChromeCookie } from '../../src/core/types.js';
+import { toPlaywrightCookies } from './cookies.js';
 
 // Realistic desktop fingerprint so 1688 does not trivially flag the bot.
 const DESKTOP_USER_AGENT =
@@ -12,10 +13,15 @@ const DESKTOP_USER_AGENT =
 
 let browser: Browser | null = null;
 
-/** Get the shared headless Chromium instance, launching it on first use. */
+/**
+ * Get the shared headless browser instance, launching it on first use.
+ * `channel: "chrome"` drives the seller's installed Chrome — the browser the
+ * handed-off session jars were created in — and removes the ~150 MB
+ * Playwright browser download from setup.
+ */
 export async function getBrowser(): Promise<Browser> {
   if (!browser) {
-    browser = await chromium.launch({ headless: true });
+    browser = await chromium.launch({ channel: 'chrome', headless: true });
   }
   return browser;
 }
@@ -29,17 +35,19 @@ export async function closeBrowser(): Promise<void> {
 }
 
 /**
- * Create a browser context carrying the persisted 1688 auth state (when one
- * exists) with a realistic desktop viewport/user agent. Used by every scan.
+ * Create a browser context carrying the handed-off cookie jar, with a
+ * realistic desktop viewport/user agent. Used by every session check and scan.
  */
-export async function createScanContext(): Promise<BrowserContext> {
+export async function createScanContext(
+  cookies: ChromeCookie[],
+): Promise<BrowserContext> {
   const activeBrowser = await getBrowser();
-  const authState = await loadAuthState();
-  return activeBrowser.newContext({
-    ...(authState ? { storageState: authState } : {}),
+  const context = await activeBrowser.newContext({
     viewport: { width: 1920, height: 1080 },
     userAgent: DESKTOP_USER_AGENT,
     locale: 'vi-VN',
     timezoneId: 'Asia/Ho_Chi_Minh',
   });
+  await context.addCookies(toPlaywrightCookies(cookies));
+  return context;
 }

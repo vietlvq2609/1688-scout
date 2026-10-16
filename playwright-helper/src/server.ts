@@ -9,14 +9,22 @@ import { fileURLToPath } from 'node:url';
 import { realpathSync } from 'node:fs';
 import { PORT, VERSION, PLAINTEXT_BODY_LIMIT, httpErrorPayload } from './constants.js';
 import { createStatusRouter } from './routes/status.js';
+import { createSessionCheckRouter } from './routes/session-check.js';
+import type { SignedInChecker } from './session.js';
 
-/** Build the configured Express app (CORS, 10MB JSON bodies, status route). */
-export function createApp(): Express {
+/** Test seam: lets tests replace the 1688 session checker with a fake. */
+export interface CreateAppOptions {
+  checkSignedIn?: SignedInChecker;
+}
+
+/** Build the configured Express app (CORS, 10MB JSON bodies, API routes). */
+export function createApp(options: CreateAppOptions = {}): Express {
   const app = express();
   app.disable('x-powered-by');
   app.use(cors());
   app.use(express.json({ limit: PLAINTEXT_BODY_LIMIT }));
   app.use(createStatusRouter());
+  app.use(createSessionCheckRouter(options.checkSignedIn));
 
   // JSON 404 — never the default HTML page.
   const notFound: RequestHandler = (_req, res) => {
