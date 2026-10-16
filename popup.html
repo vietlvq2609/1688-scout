@@ -12,9 +12,46 @@
         <span class="popup__version" id="version"></span>
       </header>
 
-      <p class="popup__hint" id="hint">
-        Mở một danh mục trên Shopee rồi mở tiện ích này để bắt đầu quét.
-      </p>
+      <section class="status">
+        <div class="status__row">
+          <span class="status__dot" id="helper-dot"></span>
+          <span class="status__label">Helper</span>
+          <span class="status__value" id="helper-value">…</span>
+        </div>
+        <div class="status__row">
+          <span class="status__dot" id="shopee-dot"></span>
+          <span class="status__label">Shopee</span>
+          <span class="status__value" id="shopee-value">…</span>
+        </div>
+        <div class="status__row">
+          <span class="status__dot" id="session-dot"></span>
+          <span class="status__label">1688</span>
+          <span class="status__value" id="session-value">…</span>
+        </div>
+      </section>
+
+      <p class="popup__url" id="category-url" hidden></p>
+      <p class="popup__hint" id="hint"></p>
+      <p class="popup__error" id="error" hidden></p>
+
+      <button class="button button--primary" id="scan-button" disabled>
+        Quét danh mục này
+      </button>
+
+      <button class="button" id="login-button" hidden>Đăng nhập 1688</button>
+
+      <section class="progress" id="progress" hidden>
+        <div class="progress__track">
+          <div class="progress__fill" id="progress-fill"></div>
+        </div>
+        <p class="progress__text" id="progress-text"></p>
+        <button class="button button--ghost" id="stop-button">Dừng</button>
+      </section>
+
+      <section class="done" id="done" hidden>
+        <p class="done__text" id="done-text"></p>
+        <button class="button button--primary" id="download-button" hidden>Tải CSV</button>
+      </section>
     </main>
 
     <script type="module" src="popup.js"></script>

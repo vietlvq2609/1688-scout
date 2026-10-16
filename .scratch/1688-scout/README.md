@@ -11,7 +11,7 @@ Source of truth: [`../../SPEC.md`](../../SPEC.md). Status values:
 | 04 | [Helper: Shopee category scraping](issues/04-helper-shopee-category-scraping.md) | ready-for-agent | 02 |
 | 05 | [Helper: 1688 image search (UI automation)](issues/05-helper-1688-image-search-ui.md) | ready-for-agent | 02, 03 |
 | 06 | [Helper: scan orchestration + CSV](issues/06-helper-batch-scan-csv.md) | ready-for-agent | 03, 04, 05 |
-| 07 | [Extension: popup + background + scan flow](issues/07-extension-popup-background.md) | ready-for-agent | 01, 06 |
+| 07 | [Extension: popup + background + scan flow](issues/07-extension-popup-background.md) | in-progress (manual tests pending) | 01, 06 |
 | 08 | [Helper: local delivery to the client](issues/08-helper-client-delivery.md) | ready-for-agent | 03, 04, 05, 06 |
 | 11 | [End-to-end verification](issues/11-integration-e2e-verification.md) | ready-for-agent | 04, 05, 06, 07 |
 
