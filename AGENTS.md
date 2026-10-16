@@ -10,7 +10,7 @@ behaviour — it is the source of truth.
 | Part | Tech |
 |---|---|
 | Extension (`/`) | Vanilla HTML + CSS + TypeScript, compiled by `tsc` to `dist/`. Dev-only dep: `chrome-types`. No framework, no bundler, no content scripts, no tests |
-| Helper (`playwright-helper/`) | Node 22 + Express + Playwright + TypeScript, vitest for its existing tests |
+| Helper (`playwright-helper/`) | Node 22 + Express + Playwright + TypeScript, vitest for its existing tests. Launches the installed Chrome (`channel: "chrome"`) |
 | Package manager | pnpm (two independent projects, two installs) |
 
 ## Where things live
@@ -25,6 +25,7 @@ behaviour — it is the source of truth.
 - **`chrome.*` only in `src/background.ts` and `src/popup.ts`** — never in `src/core/`.
 - **Popup is the only UI surface.** No content scripts, no in-page buttons. The helper does every bit of Shopee and 1688 scraping; the extension never parses their HTML.
 - **No backend.** The helper is a local process on the seller's machine, not a hosted service.
+- **The helper owns no login.** Both sites' sessions are handed off from the seller's Chrome on every request; there is no login route, no auth file, and no persisted `storageState`. Do not add one back — read `docs/adr/0001-borrow-live-browser-sessions.md` first.
 - **Constants, not settings.** Scan parameters live in `src/core/constants.ts`; there is no config UI.
 - **MV3 service workers die.** Keep scan state in `chrome.storage.session` and drive progress from the background worker, never from the popup.
 
@@ -32,6 +33,8 @@ behaviour — it is the source of truth.
 - `URL.createObjectURL` does **not** exist in a service worker — download the CSV with a `data:text/csv;base64,…` URL.
 - `chrome.runtime` messaging is JSON only — never send a Blob or ArrayBuffer; pass base64 strings.
 - The helper tsconfig sets `rootDir: '..'` so emit lands at `dist/playwright-helper/src/server.js`, which is what `pnpm start` runs. Keep it.
+- Chrome's cookie shape is not Playwright's: `sameSite` is `no_restriction|unspecified|lax|strict` on one side and `None|Lax|Strict` on the other, and `expires` can be a session marker. Map it in the helper (ticket 03's `toPlaywrightCookies`), never pass raw objects to `context.addCookies`.
+- `channel: "chrome"` means Playwright drives the seller's installed Chrome, so there is no bundled browser download; a machine without Chrome cannot run the helper.
 - Existing helper tests deliberately never launch a browser and never touch the network. Keep them that way.
 - The previous Plasmo/React attempt is archived on branch `archive/ticket-01-plasmo-wip`. Do not merge it.
 
@@ -40,3 +43,9 @@ behaviour — it is the source of truth.
   `merge: ticket NN — <title>`.
 - Conventional Commits, with a `Refs .scratch/1688-scout/issues/NN-*.md` footer.
 - A ticket is done when its boxes are ticked, `**Status:** done`, and `**Delivered:** <sha>` is set.
+
+## References
+- `SPEC.md` — the product spec and acceptance criteria.
+- `GLOSSARY.md` — the project's vocabulary: scan, search, match, offer, session, login, hand-off.
+- `docs/adr/` — decisions that are hard to reverse and would otherwise puzzle a reader.
+- `.scratch/1688-scout/README.md` — live status of every ticket.

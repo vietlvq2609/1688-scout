@@ -7,7 +7,7 @@
 **Status:** ready-for-agent
 
 - [ ] `playwright-helper/src/shopee/extractor.ts` — `extractProducts(page, config)` function
-- [ ] Injects Shopee cookies via `context.addCookies(shopeeCookies)` before navigation
+- [ ] Injects the handed-off Shopee cookies (ticket 03's `toPlaywrightCookies()`) before navigation
 - [ ] Navigates to category URL, waits for `li[data-sqe="item"]` elements
 - [ ] Scrolls to trigger lazy image loads (intersect observer or scroll to bottom)
 - [ ] Extracts per product:

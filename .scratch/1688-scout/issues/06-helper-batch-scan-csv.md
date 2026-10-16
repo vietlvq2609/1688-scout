@@ -1,15 +1,15 @@
 # 06: Helper — Batch Scan Orchestration + CSV
 
-**What to build:** full scan orchestration in the helper. `POST /api/scan-category` accepts a category URL, config and Shopee cookies → returns `scanId`. A background job extracts products (ticket 04), runs parallel 1688 searches (ticket 05, semaphore 5), calculates `priceCNY × 3500 × 3`, filters `calculated < shopeePrice`, and generates the CSV. `GET /api/scan/:id/progress` returns live progress. `GET /api/scan/:id/result` returns base64 CSV + summary. `POST /api/scan/:id/stop` cancels a running scan.
+**What to build:** full scan orchestration in the helper. `POST /api/scan-category` accepts a category URL, config and the handed-off cookie jars → returns `scanId`. A background job extracts products (ticket 04), runs parallel 1688 searches (ticket 05, semaphore 5), calculates `priceCNY × 3500 × 3`, filters `calculated < shopeePrice`, and generates the CSV. `GET /api/scan/:id/progress` returns live progress. `GET /api/scan/:id/result` returns base64 CSV + summary. `POST /api/scan/:id/stop` cancels a running scan.
 
 **Blocked by:** 03, 04, 05
 
 **Status:** ready-for-agent
 
 - [ ] `playwright-helper/src/scan/orchestrator.ts` — `ScanOrchestrator` class managing scan lifecycle; state in an in-memory `Map` keyed by `scanId`
-- [ ] `POST /api/scan-category` — validates `{ categoryUrl, config, shopeeCookies }`, creates a `scanId`, spawns `runScan()` in the background, returns `{ scanId, status: "started" }`
+- [ ] `POST /api/scan-category` — validates `{ categoryUrl, config, cookies }`, creates a `scanId`, spawns `runScan()` in the background, returns `{ scanId, status: "started" }`
 - [ ] `runScan(scanId, params)`:
-  1. creates one browser context with the 1688 auth state + injected Shopee cookies
+  1. creates one browser context carrying both handed-off jars (ticket 03)
   2. calls `extractProducts()` → up to 90 products
   3. for each product: `semaphore.run(() => search1688(context, product.imageUrl))` with `PARALLEL_CONTEXTS = 5`
   4. updates progress: `completed`, `total`, `currentTitle`, `status`, `errors`
@@ -23,5 +23,6 @@
 - [ ] `POST /api/scan/:id/stop` → sets `status: "stopped"`, cancels pending searches, keeps the partial CSV
 - [ ] CSV is UTF-8 **with BOM** so Excel renders Vietnamese correctly
 - [ ] A failed 1688 search increments `errors`, logs to the helper console, and never stops the scan
+- [ ] If a search reports `AUTH_REQUIRED` (the handed-off 1688 session died mid-scan), abort the scan immediately, set `status: "error"` with that reason, and keep the partial CSV — do not keep searching the remaining products against a dead session
 - [ ] Auto-stop after 30 minutes (`HELPER_SCAN_TIMEOUT_MS`)
 - [ ] Manual verification: run a real scan against a small category and inspect the CSV
