@@ -18,5 +18,4 @@
 - [ ] Pagination: detects "Next" button or URL `page=N` param, clicks/navigates up to `maxPages`
 - [ ] Stops after `maxPages * maxPerPage` products (max 90)
 - [ ] Returns `ShopeeCategoryProduct[]`
-- [ ] Unit test with saved HTML fixture (category page) — extracts expected fields
 - [ ] Handles missing elements gracefully (skips product, logs warning)
