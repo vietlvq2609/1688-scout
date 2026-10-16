@@ -1,0 +1,51 @@
+/* Popup styling. Plain CSS, no framework — the popup is the only UI surface. */
+
+:root {
+  --bg: #ffffff;
+  --fg: #1f2933;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  width: 360px;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.popup {
+  padding: 12px 14px 16px;
+}
+
+.popup__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+}
+
+.popup__title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.popup__version {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.popup__hint {
+  margin: 12px 0 0;
+  color: var(--muted);
+}
