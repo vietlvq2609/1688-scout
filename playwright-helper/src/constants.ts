@@ -18,6 +18,13 @@ export const PLAINTEXT_BODY_LIMIT = '10mb';
 export const SIXTEEN_EIGHT_EIGHT_IMAGE_SEARCH_URL =
   'https://air.1688.com/kapp/1688-search/pc-image-search/';
 
+/**
+ * A 1688 page that actually enforces sign-in. The image-search page renders
+ * its upload UI even without a session (verified live), so the session check
+ * opens "My Alibaba" instead: signed out it redirects to login.taobao.com.
+ */
+export const SIXTEEN_EIGHT_EIGHT_SESSION_CHECK_URL = 'https://i.1688.com/';
+
 /** How long the session check waits for that page before giving up. */
 export const SESSION_CHECK_TIMEOUT_MS = 30_000;
 

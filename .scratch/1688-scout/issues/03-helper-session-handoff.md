@@ -34,3 +34,8 @@ session is still valid. This replaces the QR login flow, `1688-auth.json` and `s
 - `checkSignedIn` always closes the context it opened, including when navigation throws.
 - Build still emits `dist/playwright-helper/src/server.js` (what `pnpm start` runs) plus an
   empty `dist/src/core/types.js` from the type-only import of the shared wire contract.
+- Follow-up (`ticket/03b-session-check-target`): live recon showed the 1688 image-search page
+  renders its upload UI even with no cookies, so the ticket's URL-redirect rule never fired and
+  `signedIn` would always be true. `checkSignedIn` now opens `https://i.1688.com/` ("My
+  Alibaba"), which redirects to `login.taobao.com` when signed out (confirmed with curl). The
+  login-host rule is unchanged; only the probed URL moved.

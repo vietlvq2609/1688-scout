@@ -6,6 +6,7 @@ import { checkSignedIn, isLoginUrl } from '../src/session.js';
 import type { ScanContextFactory, SessionCheckContext } from '../src/session.js';
 import type { ChromeCookie } from '../../src/core/types.js';
 
+const SESSION_CHECK_URL = 'https://i.1688.com/';
 const IMAGE_SEARCH_URL = 'https://air.1688.com/kapp/1688-search/pc-image-search/';
 
 interface FakeContext {
@@ -26,7 +27,7 @@ function fakeContext(opts: { finalUrl?: string; gotoError?: Error } = {}): FakeC
         navigatedTo = url;
         if (opts.gotoError) throw opts.gotoError;
       },
-      url: () => opts.finalUrl ?? IMAGE_SEARCH_URL,
+      url: () => opts.finalUrl ?? SESSION_CHECK_URL,
     }),
     close: async () => {
       closed = true;
@@ -75,10 +76,10 @@ describe('isLoginUrl', () => {
 });
 
 describe('checkSignedIn', () => {
-  it('reports true when the image-search page renders without a login redirect', async () => {
+  it('reports true when the signed-in page renders without a login redirect', async () => {
     const fake = fakeContext();
     await expect(checkSignedIn(jar, fake.createContext)).resolves.toBe(true);
-    expect(fake.navigatedTo()).toBe(IMAGE_SEARCH_URL);
+    expect(fake.navigatedTo()).toBe(SESSION_CHECK_URL);
   });
 
   it('reports false when 1688 redirects to login.1688.com', async () => {

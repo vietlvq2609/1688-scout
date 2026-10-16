@@ -11,7 +11,7 @@
 import type { ChromeCookie } from '../../src/core/types.js';
 import {
   SESSION_CHECK_TIMEOUT_MS,
-  SIXTEEN_EIGHT_EIGHT_IMAGE_SEARCH_URL,
+  SIXTEEN_EIGHT_EIGHT_SESSION_CHECK_URL,
 } from './constants.js';
 import { createScanContext } from './browser.js';
 
@@ -52,8 +52,8 @@ export function isLoginUrl(url: string): boolean {
 }
 
 /**
- * Report whether the handed-off 1688 jar still signs the visitor in. Opens the
- * image-search page once and closes the context, whatever the outcome.
+ * Report whether the handed-off 1688 jar still signs the visitor in. Opens
+ * "My Alibaba" once and closes the context, whatever the outcome.
  */
 export async function checkSignedIn(
   cookies: ChromeCookie[],
@@ -62,7 +62,7 @@ export async function checkSignedIn(
   const context = await createContext(cookies);
   try {
     const page = await context.newPage();
-    await page.goto(SIXTEEN_EIGHT_EIGHT_IMAGE_SEARCH_URL, {
+    await page.goto(SIXTEEN_EIGHT_EIGHT_SESSION_CHECK_URL, {
       waitUntil: 'domcontentloaded',
       timeout: SESSION_CHECK_TIMEOUT_MS,
     });
