@@ -19,16 +19,18 @@ export const CONSTANTS = {
   HELPER_SCAN_TIMEOUT_MS: 30 * 60 * 1000,
   HELPER_ENDPOINTS: {
     STATUS: "/api/status",
-    LOGIN: "/api/login",
+    SESSION_CHECK: "/api/session-check",
     SCAN_CATEGORY: "/api/scan-category",
     SCAN_PROGRESS: (scanId: string) => `/api/scan/${scanId}/progress`,
     SCAN_RESULT: (scanId: string) => `/api/scan/${scanId}/result`,
     SCAN_STOP: (scanId: string) => `/api/scan/${scanId}/stop`,
   },
 
-  // Shopee — used to collect cookies and to tell whether the active tab is a
-  // category page worth scanning.
+  // Shopee and 1688 — used to collect the handed-off cookie jars, and to tell
+  // whether the active tab is a category page worth scanning.
   SHOPEE_COOKIE_DOMAINS: ["shopee.vn", "shopee.com.vn"],
+  SIXTEEN_EIGHT_EIGHT_COOKIE_DOMAINS: ["1688.com"],
+  SIXTEEN_EIGHT_EIGHT_SIGN_IN_URL: "https://login.1688.com",
   SHOPEE_CATEGORY_URL_MARKERS: ["-cat.", "/cat.", "all_categories"],
 
   // How often the background worker asks the helper for progress.

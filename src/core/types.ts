@@ -43,11 +43,28 @@ export interface ChromeCookie {
   expires?: number;
 }
 
+/** The cookie jars the extension hands to the helper, one per site. */
+export interface SiteCookies {
+  shopee: ChromeCookie[];
+  sixteenEightEight: ChromeCookie[];
+}
+
 /** Request body for `POST /api/scan-category`. */
 export interface ScanCategoryRequest {
   categoryUrl: string;
   config: ScanConfig;
-  shopeeCookies: ChromeCookie[];
+  cookies: SiteCookies;
+}
+
+/** Request body for `POST /api/session-check`. */
+export interface SessionCheckRequest {
+  /** The 1688 cookie jar. */
+  cookies: ChromeCookie[];
+}
+
+/** Payload of `POST /api/session-check`. */
+export interface SessionCheckResponse {
+  loggedIn: boolean;
 }
 
 /** Payload of `GET /api/scan/:id/progress`. */
@@ -86,7 +103,6 @@ export interface SixteenEightEightResult {
 /** Payload of `GET /api/status`. */
 export interface HelperStatus {
   running: boolean;
-  loggedIn: boolean;
   port: number;
   version: string;
 }

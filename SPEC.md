@@ -19,8 +19,8 @@ Two pieces, both on the seller's own machine. No backend, no accounts, no cloud.
 
 | Piece | What it is | What it does |
 |---|---|---|
-| **Extension** | Chrome MV3, vanilla HTML + CSS + TypeScript | Reads the seller's Shopee cookies and the current category URL, starts a scan, shows progress, downloads the CSV |
-| **Helper** | Local Node process, Express + Playwright | Scrapes the Shopee category with the seller's cookies, image-searches each product on 1688 with its own persisted session, applies the formula, returns the CSV |
+| **Extension** | Chrome MV3, vanilla HTML + CSS + TypeScript | Reads the seller's Shopee and 1688 sessions and the current category URL, starts a scan, shows progress, downloads the CSV |
+| **Helper** | Local Node process, Express + Playwright | Scrapes the Shopee category and image-searches each product on 1688 using the sessions handed off by the extension, applies the formula, returns the CSV |
 
 ### Why the extension cannot do it alone
 
@@ -33,12 +33,26 @@ Two pieces, both on the seller's own machine. No backend, no accounts, no cloud.
 
 ---
 
+## Sessions
+
+Every site the helper browses is signed in as the seller. Both sessions are **handed off**
+from the seller's own Chrome: the extension reads the cookies and sends them with each
+request. The helper never signs in, never stores a session, and never owns a login.
+
+This matters most for 1688, which only exposes image search to a signed-in visitor and
+whose session expires in roughly half an hour. Because the seller's browser keeps that
+session alive, a scan always starts from a live one, and a dead session is detected before
+the scan begins rather than halfway through. The seller's recovery path is to sign in at
+`login.1688.com` in their own browser. See `docs/adr/0001-borrow-live-browser-sessions.md`.
+
+---
+
 ## Flow
 
 1. Seller opens a Shopee category page and clicks the extension icon.
 2. Popup shows helper status, 1688 login status, and **"Quét danh mục này"** (uses the
    active tab's URL — there is no button injected into the page).
-3. Extension sends `{ categoryUrl, config, shopeeCookies }` to `POST /api/scan-category`
+3. Extension sends `{ categoryUrl, config, cookies }` to `POST /api/scan-category`
    and receives a `scanId`.
 4. Helper extracts up to 90 products from the category, then for each product opens
    1688 image search (5 concurrent), parses the top results, and keeps the first result
@@ -77,17 +91,18 @@ STT,Shopee Title,Shopee Price (₫),Shopee URL,1688 Title,1688 Price (¥),1688 U
 
 | Endpoint | Request | Response |
 |---|---|---|
-| `GET /api/status` | — | `{ running, loggedIn, port, version }` |
-| `POST /api/login` | — | opens headful Chromium for 1688 QR login, saves `1688-auth.json` |
-| `POST /api/scan-category` | `{ categoryUrl, config, shopeeCookies }` | `{ scanId, status: "started" }` |
+| `GET /api/status` | — | `{ running, port, version }` |
+| `POST /api/session-check` | `{ cookies }` (1688 jar) | `{ loggedIn }` — validates the handed-off session against 1688 |
+| `POST /api/scan-category` | `{ categoryUrl, config, cookies }` | `{ scanId, status: "started" }` |
 | `GET /api/scan/:id/progress` | — | `{ completed, total, currentTitle, status, errors }` |
 | `GET /api/scan/:id/result` | — | `{ csvBase64, matches, totalScanned, errors, startedAt, completedAt }` |
 | `POST /api/scan/:id/stop` | — | cancels the scan, keeps the partial result |
 
 `status` is one of `running | completed | error | stopped`.
 
-The 1688 session lives in `1688-auth.json` (a Playwright `storageState`), created by
-`/api/login`, never committed.
+The helper holds no session of its own: no auth file, no login endpoint. If a search hits a
+login redirect mid-scan the scan is aborted with `error`, the reason is reported as
+`AUTH_REQUIRED`, and the partial CSV is kept.
 
 ---
 
@@ -100,8 +115,9 @@ The 1688 session lives in `1688-auth.json` (a Playwright `storageState`), create
 5. On completion the CSV downloads automatically and contains only matched rows with the
    columns above.
 6. Helper not running → clear Vietnamese message with a start hint.
-7. 1688 session expired → message plus a **"Đăng nhập 1688"** button that opens the
-   helper's QR login.
+7. 1688 session expired or missing → the popup shows it before the scan starts, and
+   **"Đăng nhập 1688"** opens `login.1688.com` in a normal tab so the seller can sign in
+   in the browser they already use.
 8. Stopping mid-scan downloads a partial CSV.
 9. A product that fails to search never stops the scan; errors are counted and logged.
 10. Whole scan of 90 products finishes inside the 30-minute timeout.
@@ -112,4 +128,5 @@ The 1688 session lives in `1688-auth.json` (a Playwright `storageState`), create
 
 Content scripts or any button injected into Shopee pages, React or any UI framework,
 config UI, single-product-page search, side panel, history, favourites, calculator,
-backend or cloud, multi-image search, automated tests, CI.
+backend or cloud, multi-image search, the helper owning its own login (no QR flow, no
+persisted auth file), automated tests, CI.

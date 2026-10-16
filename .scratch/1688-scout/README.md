@@ -7,7 +7,7 @@ Source of truth: [`../../SPEC.md`](../../SPEC.md). Status values:
 |---|---|---|---|
 | 01 | [Minimal extension scaffold + core types](issues/01-project-scaffold-core-types.md) | ready-for-agent | — |
 | 02 | [Playwright helper scaffold](issues/02-playwright-helper-scaffold.md) | **done** (`9433adf`) | — |
-| 03 | [Helper: 1688 login + session](issues/03-helper-1688-login-session.md) | ready-for-agent | 02 |
+| 03 | [Helper: browser session hand-off](issues/03-helper-session-handoff.md) | ready-for-agent | 02 |
 | 04 | [Helper: Shopee category scraping](issues/04-helper-shopee-category-scraping.md) | ready-for-agent | 02 |
 | 05 | [Helper: 1688 image search (UI automation)](issues/05-helper-1688-image-search-ui.md) | ready-for-agent | 02, 03 |
 | 06 | [Helper: scan orchestration + CSV](issues/06-helper-batch-scan-csv.md) | ready-for-agent | 03, 04, 05 |
@@ -43,10 +43,12 @@ Helper:
 ```bash
 cd playwright-helper
 pnpm install
-npx playwright install chromium     # first time only
-pnpm dev                            # http://localhost:3001
+pnpm dev                            # http://localhost:3001 (launches your installed Chrome)
 pnpm test                           # existing helper tests
 ```
+
+Sign in to `1688.com` in Chrome before scanning: the helper borrows that session instead of
+owning a login of its own.
 
 ## Conventions
 
@@ -61,8 +63,12 @@ pnpm test                           # existing helper tests
 
 - `archive/ticket-01-plasmo-wip` holds the abandoned Plasmo + React + vitest attempt at
   ticket 01. It is not merged and should not be.
+- Sessions are **handed off** from the seller's Chrome for both Shopee and 1688; the helper
+  owns no login and keeps no auth file. Read `docs/adr/0001-borrow-live-browser-sessions.md`
+  before changing anything about authentication, and `GLOSSARY.md` for the vocabulary
+  (session vs login, scan vs search, match vs offer).
 - The helper's tsconfig uses `rootDir: '..'` deliberately: `dist/playwright-helper/src/server.js`
   is what `pnpm start` runs, and the same setting is what will let the helper
   `import type` the extension's `src/core/types.ts` contract later.
 - Older design documents (side panel, direct 1688 API, `SEARCH_1688` messaging) were
-  deleted in this replan; they remain in git history if ever needed.
+  deleted during the replan; they remain in git history if ever needed.

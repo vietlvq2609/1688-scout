@@ -17,7 +17,7 @@ export const HELPER_ERROR_MESSAGES = {
   HELPER_UNREACHABLE: "Không kết nối được Helper. Vui lòng khởi động Helper và thử lại.",
   SHOPEE_NOT_LOGGED_IN: "Bạn cần đăng nhập Shopee để quét danh mục.",
   NOT_A_CATEGORY_PAGE: "Hãy mở một danh mục sản phẩm trên Shopee rồi thử lại.",
-  DEFAULT_1688_NOT_LOGGED_IN: "Chưa đăng nhập 1688. Hãy đăng nhập để tiếp tục.",
+  SIXTEEN_EIGHT_EIGHT_NOT_LOGGED_IN: "Chưa đăng nhập 1688. Hãy đăng nhập trong Chrome rồi thử lại.",
   SCAN_FAILED: "Quét thất bại. Vui lòng thử lại.",
 } as const;
 

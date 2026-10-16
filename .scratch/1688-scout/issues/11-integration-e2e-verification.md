@@ -8,15 +8,15 @@
 
 ## Setup
 
-- [ ] Helper running (`pnpm dev` in `playwright-helper/`), 1688 logged in (`/api/status` → `loggedIn: true`)
+- [ ] Helper running (`pnpm dev` in `playwright-helper/`), signed into 1688 in Chrome, and `/api/session-check` returns `loggedIn: true` for the handed-off cookies
 - [ ] Extension built (`pnpm build`) and loaded unpacked from `dist/` in Chrome (developer mode)
 
 ## Test case 1 — Status
 
 - [ ] Open a Shopee category while logged in → popup shows Shopee 🟢 and a launchable scan
-- [ ] Helper running + 1688 logged in → popup shows 1688 🟢
+- [ ] Helper running + 1688 signed in → popup shows 1688 🟢
 - [ ] Stop the helper → popup shows "Helper không chạy" with a start hint
-- [ ] With 1688 logged out (rename `1688-auth.json`) → popup shows "Đăng nhập 1688"; clicking it opens headful Chromium for the QR flow; after login the scan works
+- [ ] Sign out of 1688 in Chrome → the popup shows the 1688 session as dead and the scan refuses to start; "Đăng nhập 1688" opens `login.1688.com` in a tab, and after signing in there a scan works with no helper restart
 
 ## Test case 2 — Scan
 
@@ -37,6 +37,7 @@
 
 - [ ] Press "Dừng" mid-scan → a partial CSV is downloaded with a correct scanned count
 - [ ] Kill the helper mid-scan → the popup shows a clear error and can retry after restart
+- [ ] Sign out of 1688 in Chrome mid-scan → the scan aborts with `AUTH_REQUIRED` instead of grinding through the remaining products, reports the reason, and still offers the partial CSV
 - [ ] Point the extension at a category with fewer than 30 products → completes without error
 - [ ] A product with a missing image or price is skipped, counted as an error, and does not stop the scan
 
