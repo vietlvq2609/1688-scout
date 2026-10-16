@@ -7,7 +7,7 @@ import type { ErrorRequestHandler, Express, RequestHandler } from 'express';
 import type http from 'node:http';
 import { fileURLToPath } from 'node:url';
 import { realpathSync } from 'node:fs';
-import { PORT, VERSION, PLAINTEXT_BODY_LIMIT, httpErrorPayload } from './constants.js';
+import { PORT, HOST, VERSION, PLAINTEXT_BODY_LIMIT, httpErrorPayload } from './constants.js';
 import { corsOptions } from './cors.js';
 import { createScanRouter } from './routes/scan.js';
 import { createStatusRouter } from './routes/status.js';
@@ -60,12 +60,28 @@ export function createApp(options: CreateAppOptions = {}): Express {
   return app;
 }
 
-/** Start listening on the configured port and log the address. */
+/** Start listening on the configured host/port and log the address. */
 export function startServer(): http.Server {
   const app = createApp();
-  return app.listen(PORT, () => {
-    console.log(`[1688-scout-helper] v${VERSION} đang chạy tại http://localhost:${PORT}`);
+  const server = app.listen(PORT, HOST);
+
+  server.once('listening', () => {
+    console.log(`[1688-scout-helper] v${VERSION} đang chạy tại http://${HOST}:${PORT}`);
   });
+
+  server.on('error', (error: NodeJS.ErrnoException) => {
+    if (error.code === 'EADDRINUSE') {
+      console.error(
+        `[1688-scout-helper] Cổng ${PORT} đang được một ứng dụng khác sử dụng. `
+        + 'Hãy tắt ứng dụng đó (hoặc đặt HELPER_PORT khác) rồi chạy lại.',
+      );
+    } else {
+      console.error(`[1688-scout-helper] Không khởi động được helper: ${error.message}`);
+    }
+    process.exit(1);
+  });
+
+  return server;
 }
 
 function isDirectRun(): boolean {

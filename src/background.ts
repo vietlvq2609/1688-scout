@@ -36,7 +36,9 @@ async function buildState(tabUrl: string | null): Promise<PopupState> {
   try {
     helperStatus = await helper.checkHealth();
     signedIn1688 = (await helper.checkSession(cookies.sixteenEightEight)).signedIn;
-  } catch {
+  } catch (error) {
+    // Logged so the service worker console shows why the helper looks down.
+    console.warn('[1688 Scout] helper check failed:', error);
     helperStatus = null;
     signedIn1688 = null;
   }

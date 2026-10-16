@@ -39,7 +39,7 @@ if not exist "node_modules" (
 )
 
 echo [2/2] Dang khoi dong Helper...
-echo Mo http://localhost:3001/api/status de kiem tra.
+echo Mo http://127.0.0.1:3001/api/status de kiem tra.
 echo Giu cua so nay mo trong khi quet. Nhan Ctrl+C de dung.
 echo.
 call pnpm start

@@ -5,6 +5,14 @@
 /** Port the helper listens on (env HELPER_PORT overrides). */
 export const PORT: number = Number(process.env.HELPER_PORT ?? 3001);
 
+/**
+ * Interface the helper binds. Explicit IPv4 loopback, not `::`: Chrome
+ * resolves `localhost` to `127.0.0.1`, and binding `::` alone can silently
+ * succeed while another process owns IPv4, leaving the extension unable to
+ * reach the helper.
+ */
+export const HOST = '127.0.0.1';
+
 /** Helper version reported by GET /api/status. */
 export const VERSION = '1.0.0';
 

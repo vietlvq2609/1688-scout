@@ -27,5 +27,9 @@
   does not ship pnpm.
 - A stopped helper fails immediately: the popup's `checkHealth()` gets `ECONNREFUSED`, which
   `src/helperClient.ts` maps to `HELPER_UNREACHABLE` and the popup renders as "Helper không chạy".
+- Follow-up (`fix/helper-localhost-reachability`): the helper now binds `127.0.0.1` explicitly and
+  exits 1 with `Cổng <port> đang được một ứng dụng khác sử dụng` on `EADDRINUSE`. Before this it
+  could bind IPv6 `::` while another process owned IPv4 `localhost`, print the success banner, and
+  leave the extension unable to reach it. The extension now targets `http://127.0.0.1:3001` too.
 - The scan endpoints are listed in the README now even though 04–06 are still open; the guide
   lands with this ticket so sellers have one document.
