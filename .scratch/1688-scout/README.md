@@ -12,7 +12,7 @@ Source of truth: [`../../SPEC.md`](../../SPEC.md). Status values:
 | 05 | [Helper: 1688 image search (UI automation)](issues/05-helper-1688-image-search-ui.md) | in-progress (live-image check pending) | 02, 03 |
 | 06 | [Helper: scan orchestration + CSV](issues/06-helper-batch-scan-csv.md) | in-progress (real-scan check pending) | 03, 04, 05 |
 | 07 | [Extension: popup + background + scan flow](issues/07-extension-popup-background.md) | in-progress (manual tests pending) | 01, 06 |
-| 08 | [Helper: local delivery to the client](issues/08-helper-client-delivery.md) | ready-for-agent | 03, 04, 05, 06 |
+| 08 | [Helper: local delivery to the client](issues/08-helper-client-delivery.md) | in-progress (manual test pending) | 03, 04, 05, 06 |
 | 11 | [End-to-end verification](issues/11-integration-e2e-verification.md) | ready-for-agent | 04, 05, 06, 07 |
 
 Tickets 01–08 are the build order; ticket 11 is the manual acceptance pass. There is no

@@ -8,6 +8,7 @@ import type http from 'node:http';
 import { fileURLToPath } from 'node:url';
 import { realpathSync } from 'node:fs';
 import { PORT, VERSION, PLAINTEXT_BODY_LIMIT, httpErrorPayload } from './constants.js';
+import { corsOptions } from './cors.js';
 import { createScanRouter } from './routes/scan.js';
 import { createStatusRouter } from './routes/status.js';
 import { createSessionCheckRouter } from './routes/session-check.js';
@@ -21,11 +22,11 @@ export interface CreateAppOptions {
   scanService?: ScanService;
 }
 
-/** Build the configured Express app (CORS, 10MB JSON bodies, API routes). */
+/** Build the configured Express app (CORS allow-list, 10MB JSON bodies, API routes). */
 export function createApp(options: CreateAppOptions = {}): Express {
   const app = express();
   app.disable('x-powered-by');
-  app.use(cors());
+  app.use(cors(corsOptions));
   app.use(express.json({ limit: PLAINTEXT_BODY_LIMIT }));
   app.use(createStatusRouter());
   app.use(createSessionCheckRouter(options.checkSignedIn));

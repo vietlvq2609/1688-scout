@@ -168,10 +168,16 @@ describe('error handler', () => {
 
 describe('CORS', () => {
   it('allows cross-origin requests from the extension', async () => {
+    const origin = `chrome-extension://${'a'.repeat(32)}`;
+    const res = await fetch(`${baseUrl}/api/status`, { headers: { origin } });
+    expect(res.headers.get('access-control-allow-origin')).toBe(origin);
+  });
+
+  it('does not expose the helper to an arbitrary website origin', async () => {
     const res = await fetch(`${baseUrl}/api/status`, {
-      headers: { origin: 'chrome-extension://abc123' },
+      headers: { origin: 'https://evil.example' },
     });
-    expect(res.headers.get('access-control-allow-origin')).toBe('*');
+    expect(res.headers.get('access-control-allow-origin')).toBeNull();
   });
 });
 

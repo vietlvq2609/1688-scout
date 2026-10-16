@@ -1,18 +1,41 @@
 # 1688 Scout Helper
 
-Standalone local Node.js helper (Express + Playwright) that does all 1688 /
-Shopee scraping and CSV generation for the 1688 Scout Chrome extension. It runs
-on the seller's own machine — it is **not** a backend server.
+Local Node.js helper (Express + Playwright) that does all Shopee / 1688
+scraping for the 1688 Scout Chrome extension and produces the CSV. It runs on
+the seller's own machine — it is **not** a backend server.
 
-## Prerequisites
+## Dành cho người bán (hướng dẫn nhanh)
+
+1. **Cài Node.js 22** — tải tại <https://nodejs.org/> và cài như bình thường.
+2. **Chạy helper** — nháy đúp `start-helper.bat`. Lần đầu nó tự cài đặt (vài
+   phút). **Giữ cửa sổ này mở** trong lúc quét; đóng cửa sổ là helper dừng.
+3. **Đăng nhập 1688 một lần** — mở <https://1688.com> trong Chrome và đăng nhập.
+   Helper mượn phiên đăng nhập đó, không tự đăng nhập và không lưu mật khẩu.
+4. **Cài tiện ích** — `chrome://extensions` → bật *Developer mode* → *Load
+   unpacked* → chọn thư mục `dist/` của tiện ích.
+5. **Quét** — mở một danh mục Shopee, bấm biểu tượng 1688 Scout, bấm
+   **“Quét danh mục này”**. File CSV sẽ tự tải về khi xong.
+
+### Xử lý sự cố
+
+- **“Helper không chạy”** — chưa mở `start-helper.bat`, hoặc cửa sổ helper đã
+  bị đóng. Mở lại và thử lại; helper dừng sẽ báo lỗi ngay chứ không treo.
+- **“Chưa đăng nhập 1688”** — đăng nhập `1688.com` trong Chrome, rồi bấm
+  **“Đăng nhập 1688”** trong tiện ích để mở trang đăng nhập.
+- **CSV trống** — không sản phẩm nào có giá nhập thấp hơn giá Shopee, hoặc
+  Shopee đang chặn đọc danh mục. Thử một danh mục khác và kiểm tra cửa sổ
+  helper xem có dòng lỗi nào không.
+
+## For developers
+
+### Prerequisites
 
 - Node.js 22+
-- Google Chrome installed — the helper drives the seller's own Chrome
-  (`channel: "chrome"`), which is where the handed-off sessions live, and needs
-  no bundled browser download.
-- Inside this directory: `pnpm install`
+- Google Chrome installed — the helper drives it via `channel: "chrome"`, so
+  there is no bundled browser download.
+- `pnpm` (enable with `corepack enable` if needed), then `pnpm install`.
 
-## Commands
+### Commands
 
 | Command | What it does |
 |---|---|
@@ -21,31 +44,33 @@ on the seller's own machine — it is **not** a backend server.
 | `pnpm start` | Run the compiled server (`node dist/playwright-helper/src/server.js`) |
 | `pnpm test` | Run vitest (no browser, no network) |
 | `pnpm typecheck` | `tsc --noEmit` |
+| `start-helper.bat` | Seller-facing launcher: checks Node/pnpm, installs, starts |
 
-## Configuration
+### Configuration
 
 | Env var | Default | Purpose |
 |---|---|---|
 | `HELPER_PORT` | `3001` | Port the helper listens on |
 
-## Endpoints
+### Endpoints
 
 | Endpoint | Request | Response |
 |---|---|---|
 | `GET /api/status` | — | `{ running: true, port, version }` |
 | `POST /api/session-check` | `{ cookies }` (the 1688 jar) | `{ signedIn }` |
+| `POST /api/scan-category` | `{ categoryUrl, config, cookies }` | `{ scanId, status: "started" }` |
+| `GET /api/scan/:id/progress` | — | `{ completed, total, currentTitle, status, errors }` |
+| `GET /api/scan/:id/result` | — | `{ csvBase64, matches, totalScanned, errors, startedAt, completedAt }` |
+| `POST /api/scan/:id/stop` | — | stops the scan, keeps the partial CSV |
 
-More endpoints (scan routes) arrive with later tickets.
+CORS only allows `chrome-extension://<id>` origins, so a website the seller
+visits cannot drive scans on `localhost:3001`.
 
-## Sessions
+### Sessions
 
-The helper owns no session and stores none: there is no login route, no auth
-file, and no `storageState`. The extension reads the seller's Shopee and 1688
-cookies from Chrome and hands them over on every request; the helper injects
-them into a Playwright context (`src/cookies.ts` → `src/browser.ts`).
-
-`POST /api/session-check` opens the 1688 image-search page with the handed-off
-1688 jar and reports `signedIn: false` when 1688 redirects to
-`login.1688.com` / `login.taobao.com`. Recovery is the seller signing in at
-`login.1688.com` in their own Chrome — see
-`docs/adr/0001-borrow-live-browser-sessions.md`.
+The helper owns no session and stores none: no login route, no auth file, no
+`storageState`. The extension reads the seller's Shopee and 1688 cookies from
+Chrome and hands them over on every request; the helper injects them into a
+Playwright context (`src/cookies.ts` → `src/browser.ts`). Recovery from an
+expired 1688 session is the seller signing in at `login.1688.com` in their own
+Chrome — see `docs/adr/0001-borrow-live-browser-sessions.md`.
