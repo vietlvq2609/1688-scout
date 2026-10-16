@@ -19,7 +19,14 @@ the seller's own machine — it is **not** a backend server.
 ### Xử lý sự cố
 
 - **“Helper không chạy”** — chưa mở `start-helper.bat`, hoặc cửa sổ helper đã
-  bị đóng. Mở lại và thử lại; helper dừng sẽ báo lỗi ngay chứ không treo.
+  bị đóng. Mở lại và thử lại; helper dừng sẽ báo lỗi ngay chứ không treo. Mở
+  `http://127.0.0.1:3001/api/status` trong Chrome để kiểm tra: đúng helper sẽ trả
+  `{"running":true,...}`; nếu thấy JSON khác thì cổng 3001 đang bị ứng dụng khác
+  chiếm.
+- **Helper báo “Cổng 3001 đang được một ứng dụng khác sử dụng”** — tắt ứng dụng
+  đang chiếm cổng 3001 rồi chạy lại. Nếu phải giữ ứng dụng đó, đặt
+  `set HELPER_PORT=3002` trước khi chạy helper **và** đổi cổng trong tiện ích
+  (`src/core/constants.ts`) rồi build lại.
 - **“Chưa đăng nhập 1688”** — đăng nhập `1688.com` trong Chrome, rồi bấm
   **“Đăng nhập 1688”** trong tiện ích để mở trang đăng nhập.
 - **CSV trống** — không sản phẩm nào có giá nhập thấp hơn giá Shopee, hoặc

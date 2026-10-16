@@ -12,8 +12,9 @@ export const CONSTANTS = {
   MAX_RESULTS_PER_SEARCH: 10,
   PARALLEL_CONTEXTS: 5,
 
-  // Local helper process.
-  HELPER_BASE_URL: "http://localhost:3001",
+  // Local helper process. 127.0.0.1, not "localhost": Chrome may resolve
+  // localhost to IPv6 while the helper binds IPv4 loopback.
+  HELPER_BASE_URL: "http://127.0.0.1:3001",
   HELPER_REQUEST_TIMEOUT_MS: 30_000,
   HELPER_HEALTH_CHECK_MS: 5_000,
   HELPER_SCAN_TIMEOUT_MS: 30 * 60 * 1000,
