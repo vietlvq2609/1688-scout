@@ -20,12 +20,18 @@ ticket 09 or 10 — they were removed with the side-panel design.
 
 ## Suggested order for fastest delivery
 
-`01 → 03 → 05 → 04 → 06 → 07 → 08 → 11` — 01 and 02 are done; **next up is 03**.
+`01 → 03 → 05 → 04 → 06 → 07 → 08 → 11` — 01–08 are implemented and merged into
+`integration/1688-scout-mvp`; all that is left is the **manual acceptance pass (ticket 11)**.
+The live-site DOM has been verified for both scrapers, but no real scan has been run end to end
+(needs a signed-in Chrome), so 03–08 stay `in-progress` until ticket 11 passes.
 
-Ticket 05 is the riskiest link in the chain (can 1688's image-search UI really be driven
-headlessly?); do it early so a failure surfaces before the extension is built. Once ticket
-06 passes with `curl`, the client-visible value already exists and ticket 07 is only a
-wrapper.
+Known MVP limitations, accepted deliberately:
+- `Shop Name` and `Shop Rating` columns are empty: the 1688 result card exposes neither.
+- The 1688 session check probes `https://i.1688.com/` (redirects to login when signed out); the
+  image-search page itself does not enforce sign-in.
+- Shopee pagination is URL-param only (`?page=N`, 1-based); no Next-button selector.
+- If 1688's selectors or anti-bot behaviour have moved, one real scan will reveal it and the
+  selector lists in `src/shopee/extractor.ts` / `src/sixteen-eight-eight/search.ts` are the fix.
 
 ## How to run
 
