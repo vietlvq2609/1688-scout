@@ -75,6 +75,11 @@ export interface ScanProgress {
   currentTitle: string;
   status: "running" | "completed" | "error" | "stopped";
   errors: number;
+  /**
+   * Present when `status` is `error`: why the scan gave up. `AUTH_REQUIRED`
+   * means the handed-off 1688 session died mid-scan.
+   */
+  error?: SearchError;
 }
 
 /** Payload of `GET /api/scan/:id/result`. */
