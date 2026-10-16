@@ -1,6 +1,6 @@
 # 06: Helper — Batch Scan Orchestration + CSV
 
-**What to build:** full scan orchestration in the helper. `POST /api/scan-category` accepts a category URL, config and the handed-off cookie jars → returns `scanId`. A background job extracts products (ticket 04), runs parallel 1688 searches (ticket 05, semaphore 5), calculates `priceCNY × 3500 × 3`, filters `calculated < shopeePrice`, and generates the CSV. `GET /api/scan/:id/progress` returns live progress. `GET /api/scan/:id/result` returns base64 CSV + summary. `POST /api/scan/:id/stop` cancels a running scan.
+**What to build:** full scan orchestration in the helper. `POST /api/scan-category` accepts a category URL, config and the handed-off cookie jars → returns `scanId`. In the background it extracts products (ticket 04), runs parallel 1688 searches (ticket 05, semaphore 5), calculates `priceCNY × 3500 × 3`, filters `landedCost < shopeePrice`, and generates the CSV. `GET /api/scan/:id/progress` returns live progress. `GET /api/scan/:id/result` returns base64 CSV + summary. `POST /api/scan/:id/stop` cancels a running scan.
 
 **Blocked by:** 03, 04, 05
 
@@ -15,7 +15,7 @@
   4. updates progress: `completed`, `total`, `currentTitle`, `status`, `errors`
   5. computes `calculatedPriceVND = priceCNY × cnyVndRate × markupMultiplier` on the first 1688 result
   6. keeps only rows where `calculatedPriceVND < shopeePriceVND`
-  7. maps rows to `STT, Shopee Title, Shopee Price (₫), Shopee URL, 1688 Title, 1688 Price (¥), 1688 URL, Calculated Price (₫), Match, Shop Name, Shop Rating, MOQ`
+  7. maps rows to `STT, Shopee Title, Shopee Price (₫), Shopee URL, 1688 Title, 1688 Price (¥), 1688 URL, Landed Cost (₫), Match, Shop Name, Shop Rating, MOQ`
   8. generates the CSV string and base64-encodes it
   9. stores the final result, sets `status: "completed"`
 - [ ] `GET /api/scan/:id/progress` → current progress object

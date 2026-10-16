@@ -64,7 +64,7 @@ export interface SessionCheckRequest {
 
 /** Payload of `POST /api/session-check`. */
 export interface SessionCheckResponse {
-  loggedIn: boolean;
+  signedIn: boolean;
 }
 
 /** Payload of `GET /api/scan/:id/progress`. */
@@ -89,8 +89,8 @@ export interface ScanResult {
   completedAt: string;
 }
 
-/** One 1688 image-search match for a product, produced by the helper. */
-export interface SixteenEightEightResult {
+/** One 1688 offer returned for a product image, produced by the helper. */
+export interface SixteenEightEightOffer {
   thumbnailUrl: string;
   title: string;
   priceCNY: number;

@@ -1,6 +1,6 @@
 # 05: Helper — 1688 Image Search via UI Automation
 
-**What to build:** Playwright function `search1688(context, imageUrl)` that drives the 1688 image-search UI (NOT a reverse-engineered API). Opens `https://air.1688.com/kapp/1688-search/pc-image-search/`, uploads the image (downloading it from `imageUrl` first), waits for results, and parses the top 10 cards. Returns `SixteenEightEightResult[]` with `title, priceCNY, moq, shopName, shopRating, productUrl, thumbnailUrl`.
+**What to build:** Playwright function `search1688(context, imageUrl)` that drives the 1688 image-search UI (NOT a reverse-engineered API). Opens `https://air.1688.com/kapp/1688-search/pc-image-search/`, uploads the image (downloading it from `imageUrl` first), waits for results, and parses the top 10 cards. Returns `SixteenEightEightOffer[]` with `title, priceCNY, moq, shopName, shopRating, productUrl, thumbnailUrl`.
 
 **Blocked by:** 02, 03
 
@@ -22,7 +22,7 @@
   - `shopRating`: rating element → parse float
   - `productUrl`: link to `detail.1688.com/offer/...`
   - `thumbnailUrl`: product image src
-- [ ] Returns the top 10 results as `SixteenEightEightResult[]`; returns `[]` when no cards are found
+- [ ] Returns the top 10 offers as `SixteenEightEightOffer[]`; returns `[]` when no cards are found
 - [ ] Throws `AUTH_REQUIRED` when the page redirects to `login.1688.com` / `login.taobao.com`, or when a verification slider blocks the results
 - [ ] Closes the page after extraction
 - [ ] Manual test: with a valid handed-off session, search a known product image and inspect the parsed structure

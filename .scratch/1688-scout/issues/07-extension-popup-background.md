@@ -13,8 +13,8 @@
 - [ ] `src/helperClient.ts` — thin fetch client on `CONSTANTS.HELPER_BASE_URL`: `checkHealth()`, `checkSession(cookies)`, `startScan(params)`, `getProgress(scanId)`, `getResult(scanId)`, `stopScan(scanId)`; 30s timeout per request; typed from `src/core/types.ts`
 - [ ] `src/cookies.ts` — `collectSiteCookies()`: `chrome.cookies.getAll()` for `shopee.vn` + `shopee.com.vn` and for `1688.com`, mapped to the `ChromeCookie` shape the helper expects
 - [ ] `src/background.ts`:
-  - [ ] `GET_HELPER_STATUS` → `checkHealth()`; `GET_1688_SESSION` → `checkSession(await collectSiteCookies().sixteenEightEight)`
-  - [ ] `START_SCAN` — reads the popup-supplied category URL, collects both jars, refuses with `SHOPEE_NOT_LOGGED_IN` when the Shopee jar is empty, POSTs `{ categoryUrl, config, cookies }` to `/api/scan-category`, and stores `{ scanId, status, categoryUrl }` in `chrome.storage.session`
+  - [ ] `GET_HELPER_STATUS` → `checkHealth()`; `GET_1688_SESSION` → `checkSession(await collectSiteCookies().sixteenEightEight)` and exposes the returned `signedIn`
+  - [ ] `START_SCAN` — reads the popup-supplied category URL, collects both jars, refuses with `SHOPEE_NOT_SIGNED_IN` when the Shopee jar is empty, POSTs `{ categoryUrl, config, cookies }` to `/api/scan-category`, and stores `{ scanId, status, categoryUrl }` in `chrome.storage.session`
   - [ ] polls `/api/scan/:id/progress` every 2s while a scan is running; each poll keeps the service worker alive, and the popup re-attaches from `chrome.storage.session`
   - [ ] on `completed` / `stopped` — GETs `/api/scan/:id/result`, builds a `data:text/csv;base64,…` URL (no `URL.createObjectURL` in a service worker), calls `chrome.downloads.download({ filename: 'matches-<category>-<date>.csv' })`, and persists the summary
   - [ ] on `error` with `AUTH_REQUIRED` — surfaces "session 1688 đã hết hạn, hãy đăng nhập lại" and still offers the partial CSV

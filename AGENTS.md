@@ -6,6 +6,10 @@ clicks the extension on a category page and gets a CSV of the products whose lan
 cost (`priceCNY × 3500 × 3`) beats the Shopee price. Read `SPEC.md` before changing
 behaviour — it is the source of truth.
 
+**Vocabulary is not free-form.** `GLOSSARY.md` is the single source of truth for terms
+(product vs offer, scan vs search, session vs login, handed off vs owned). Read it before
+writing code, tickets or user-facing copy, and do not introduce synonyms.
+
 ## Stack
 | Part | Tech |
 |---|---|

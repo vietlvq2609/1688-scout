@@ -5,7 +5,7 @@ Source of truth: [`../../SPEC.md`](../../SPEC.md). Status values:
 
 | # | Ticket | Status | Blocked by |
 |---|---|---|---|
-| 01 | [Minimal extension scaffold + core types](issues/01-project-scaffold-core-types.md) | ready-for-agent | — |
+| 01 | [Minimal extension scaffold + core types](issues/01-project-scaffold-core-types.md) | **done** (`8f9356a`) | — |
 | 02 | [Playwright helper scaffold](issues/02-playwright-helper-scaffold.md) | **done** (`9433adf`) | — |
 | 03 | [Helper: browser session hand-off](issues/03-helper-session-handoff.md) | ready-for-agent | 02 |
 | 04 | [Helper: Shopee category scraping](issues/04-helper-shopee-category-scraping.md) | ready-for-agent | 02 |
@@ -20,7 +20,7 @@ ticket 09 or 10 — they were removed with the side-panel design.
 
 ## Suggested order for fastest delivery
 
-`01 → 03 → 05 → 04 → 06 → 07 → 08 → 11`
+`01 → 03 → 05 → 04 → 06 → 07 → 08 → 11` — 01 and 02 are done; **next up is 03**.
 
 Ticket 05 is the riskiest link in the chain (can 1688's image-search UI really be driven
 headlessly?); do it early so a failure surfaces before the extension is built. Once ticket

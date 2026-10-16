@@ -50,7 +50,7 @@ the scan begins rather than halfway through. The seller's recovery path is to si
 ## Flow
 
 1. Seller opens a Shopee category page and clicks the extension icon.
-2. Popup shows helper status, 1688 login status, and **"Quét danh mục này"** (uses the
+2. Popup shows helper status, 1688 session status, and **"Quét danh mục này"** (uses the
    active tab's URL — there is no button injected into the page).
 3. Extension sends `{ categoryUrl, config, cookies }` to `POST /api/scan-category`
    and receives a `scanId`.
@@ -82,7 +82,7 @@ the scan begins rather than halfway through. The seller's recovery path is to si
 UTF-8 **with BOM** (Excel-friendly), matched rows only:
 
 ```
-STT,Shopee Title,Shopee Price (₫),Shopee URL,1688 Title,1688 Price (¥),1688 URL,Calculated Price (₫),Match,Shop Name,Shop Rating,MOQ
+STT,Shopee Title,Shopee Price (₫),Shopee URL,1688 Title,1688 Price (¥),1688 URL,Landed Cost (₫),Match,Shop Name,Shop Rating,MOQ
 ```
 
 ---
@@ -92,7 +92,7 @@ STT,Shopee Title,Shopee Price (₫),Shopee URL,1688 Title,1688 Price (¥),1688 U
 | Endpoint | Request | Response |
 |---|---|---|
 | `GET /api/status` | — | `{ running, port, version }` |
-| `POST /api/session-check` | `{ cookies }` (1688 jar) | `{ loggedIn }` — validates the handed-off session against 1688 |
+| `POST /api/session-check` | `{ cookies }` (1688 jar) | `{ signedIn }` — validates the handed-off session against 1688 |
 | `POST /api/scan-category` | `{ categoryUrl, config, cookies }` | `{ scanId, status: "started" }` |
 | `GET /api/scan/:id/progress` | — | `{ completed, total, currentTitle, status, errors }` |
 | `GET /api/scan/:id/result` | — | `{ csvBase64, matches, totalScanned, errors, startedAt, completedAt }` |
@@ -108,7 +108,7 @@ login redirect mid-scan the scan is aborted with `error`, the reason is reported
 
 ## Acceptance criteria
 
-1. Popup shows Shopee login, helper reachability and 1688 login state correctly.
+1. Popup shows the Shopee session, helper reachability and the 1688 session state correctly.
 2. "Quét danh mục này" starts a scan from the current category tab.
 3. No browser window is visible while scanning (helper is headless).
 4. Progress updates while scanning; the scan survives the popup being closed.

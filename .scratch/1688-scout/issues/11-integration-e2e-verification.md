@@ -8,7 +8,7 @@
 
 ## Setup
 
-- [ ] Helper running (`pnpm dev` in `playwright-helper/`), signed into 1688 in Chrome, and `/api/session-check` returns `loggedIn: true` for the handed-off cookies
+- [ ] Helper running (`pnpm dev` in `playwright-helper/`), signed into 1688 in Chrome, and `/api/session-check` returns `signedIn: true` for the handed-off cookies
 - [ ] Extension built (`pnpm build`) and loaded unpacked from `dist/` in Chrome (developer mode)
 
 ## Test case 1 — Status
@@ -29,7 +29,7 @@
 ## Test case 3 — CSV content
 
 - [ ] Open the CSV in Excel/Sheets: headers match SPEC.md exactly, in order
-- [ ] Every row satisfies `Calculated Price (₫) < Shopee Price (₫)`
+- [ ] Every row satisfies `Landed Cost (₫) < Shopee Price (₫)`
 - [ ] Vietnamese characters render correctly (UTF-8 with BOM)
 - [ ] URLs are clickable and point at the right products
 

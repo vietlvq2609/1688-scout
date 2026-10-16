@@ -21,6 +21,7 @@
 - [x] `pnpm typecheck` passes, `pnpm build` emits `dist/`, and Chrome packs `dist/` without manifest errors
 
 **Notes:**
+- `SixteenEightEightResult` was later renamed `SixteenEightEightOffer` to match `GLOSSARY.md` (an offer is a 1688 listing); the checklist above records the name as originally delivered.
 - The build is a single script (`scripts/build.mjs`) rather than a `tsc && cp` chain so it stays cross-platform and needs no extra dependency.
 - `assets/icon.png` (512×512) was salvaged from the abandoned Plasmo attempt.
 - To load it: `pnpm build` → `chrome://extensions` → Developer mode → Load unpacked → `dist/`.
