@@ -9,7 +9,7 @@ Source of truth: [`../../SPEC.md`](../../SPEC.md). Status values:
 | 02 | [Playwright helper scaffold](issues/02-playwright-helper-scaffold.md) | **done** (`9433adf`) | — |
 | 03 | [Helper: browser session hand-off](issues/03-helper-session-handoff.md) | in-progress (manual tests pending) | 02 |
 | 04 | [Helper: Shopee category scraping](issues/04-helper-shopee-category-scraping.md) | in-progress (live check pending) | 02 |
-| 05 | [Helper: 1688 image search (UI automation)](issues/05-helper-1688-image-search-ui.md) | ready-for-agent | 02, 03 |
+| 05 | [Helper: 1688 image search (UI automation)](issues/05-helper-1688-image-search-ui.md) | in-progress (live-image check pending) | 02, 03 |
 | 06 | [Helper: scan orchestration + CSV](issues/06-helper-batch-scan-csv.md) | ready-for-agent | 03, 04, 05 |
 | 07 | [Extension: popup + background + scan flow](issues/07-extension-popup-background.md) | ready-for-agent | 01, 06 |
 | 08 | [Helper: local delivery to the client](issues/08-helper-client-delivery.md) | ready-for-agent | 03, 04, 05, 06 |
