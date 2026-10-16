@@ -1,0 +1,180 @@
+/* Popup styling. Plain CSS, no framework — the popup is the only UI surface. */
+
+:root {
+  --bg: #ffffff;
+  --fg: #1f2933;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --primary: #ee4d2d;
+  --primary-dark: #d73211;
+  --ok: #16a34a;
+  --bad: #dc2626;
+  --unknown: #d1d5db;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  width: 360px;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.popup {
+  padding: 12px 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.popup__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+}
+
+.popup__title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.popup__version {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.status {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.status__row {
+  display: grid;
+  grid-template-columns: 10px 60px 1fr;
+  align-items: center;
+  gap: 8px;
+}
+
+.status__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--unknown);
+}
+
+.status__dot[data-tone="ok"] {
+  background: var(--ok);
+}
+
+.status__dot[data-tone="bad"] {
+  background: var(--bad);
+}
+
+.status__label {
+  color: var(--muted);
+}
+
+.status__value {
+  text-align: right;
+}
+
+.popup__url {
+  margin: 0;
+  padding: 6px 8px;
+  background: #f9fafb;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 11px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.popup__hint {
+  margin: 0;
+  color: var(--muted);
+}
+
+.popup__error {
+  margin: 0;
+  color: var(--bad);
+}
+
+.button {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: #ffffff;
+  color: var(--fg);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.button--primary {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #ffffff;
+}
+
+.button--primary:not(:disabled):hover {
+  background: var(--primary-dark);
+  border-color: var(--primary-dark);
+}
+
+.button--ghost {
+  background: transparent;
+}
+
+.progress {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.progress__track {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.progress__fill {
+  height: 100%;
+  width: 0;
+  background: var(--primary);
+  transition: width 0.3s ease;
+}
+
+.progress__text {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.done {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.done__text {
+  margin: 0;
+  font-weight: 600;
+}

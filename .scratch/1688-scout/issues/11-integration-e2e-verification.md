@@ -1,41 +1,47 @@
-# 11: Integration + E2E Verification
+# 11: End-to-End Verification
 
-**What to build:** End-to-end verification that the full flow works. Manual test script + checklist. All acceptance criteria from SPEC.md pass.
+**What to build:** verification that the whole flow works, as a manual checklist. Every acceptance criterion in `SPEC.md` passes.
 
-**Blocked by:** 04, 06, 08, 10
+**Blocked by:** 04, 05, 06, 07
 
 **Status:** ready-for-agent
 
-- [ ] Helper running (`npm start` in `playwright-helper/`), 1688 logged in (`/api/status` → `loggedIn: true`)
-- [ ] Extension loaded in Chrome (developer mode), Plasmo dev server running
-- [ ] Test case 1 — Login check:
-  - Open Shopee.vn logged in → popup shows 🟢 Shopee
-  - Helper running + 1688 logged in → popup shows 🟢 1688
-  - Logout Shopee → popup shows 🔴 Shopee + "Vui lòng đăng nhập Shopee"
-  - Stop helper → popup shows "Helper không chạy" + guide link
-- [ ] Test case 2 — Category scan:
-  - Navigate to `shopee.vn/Thoi-Trang-Nam-cat.11035567` (or any category)
-  - "Quét danh mục" button appears near category title
-  - Open popup, set config (pages=2, products/page=10, rate=3500, multiplier=3)
-  - Click "Quét danh mục" in popup (or page button)
-  - Popup shows progress: "Đang quét: X/Y", progress bar updates every 2s
-  - No browser window opens (helper runs headless)
-  - Scan completes → popup shows "Hoàn tất! Tìm thấy N matches"
-  - CSV downloads automatically: `matches-thoi-trang-nam-2025-01-15.csv`
-- [ ] Test case 3 — CSV content:
-  - Open CSV in Excel/Sheets
-  - Headers: `STT, Shopee Title, Shopee Price (₫), Shopee URL, 1688 Title, 1688 Price (¥), 1688 URL, Calculated Price (₫), Match, Shop Name, Shop Rating, MOQ`
-  - All rows have `Match = "Có"` (calculated < Shopee price)
-  - Data types correct: prices as numbers, URLs clickable
-  - Vietnamese characters display correctly (UTF-8 with BOM)
-- [ ] Test case 4 — Error handling:
-  - Stop scan mid-way → partial CSV downloads, shows scanned count
-  - Helper crashes → popup shows error, "Thử lại" works after restart
-  - 1688 session expired → helper `/api/status` returns `loggedIn: false` → popup shows "Đăng nhập 1688" → click opens headful browser for QR → after login, scan works
-- [ ] Test case 5 — Edge cases:
-  - Category with < 30 products/page → handles gracefully
-  - Product with missing image/price → skipped, error counted, scan continues
-  - Network timeout → retry works, eventually fails gracefully
-  - Large category (90 products) → completes within 30 min timeout
-- [ ] Performance: 90 products, 5 parallel → completes ~3-5 min
-- [ ] Document any known issues / follow-up tickets
+## Setup
+
+- [ ] Helper running (`pnpm dev` in `playwright-helper/`), signed into 1688 in Chrome, and `/api/session-check` returns `signedIn: true` for the handed-off cookies
+- [ ] Extension built (`pnpm build`) and loaded unpacked from `dist/` in Chrome (developer mode)
+
+## Test case 1 — Status
+
+- [ ] Open a Shopee category while logged in → popup shows Shopee 🟢 and a launchable scan
+- [ ] Helper running + 1688 signed in → popup shows 1688 🟢
+- [ ] Stop the helper → popup shows "Helper không chạy" with a start hint
+- [ ] Sign out of 1688 in Chrome → the popup shows the 1688 session as dead and the scan refuses to start; "Đăng nhập 1688" opens `login.1688.com` in a tab, and after signing in there a scan works with no helper restart
+
+## Test case 2 — Scan
+
+- [ ] Open `shopee.vn/Thoi-Trang-Nam-cat.11035567` (or any category), click the extension icon
+- [ ] Click "Quét danh mục này" → progress starts counting, no browser window appears
+- [ ] Progress bar and "Đang quét X/Y" update every ~2s
+- [ ] Close the popup mid-scan, reopen it → the scan is still running and the popup re-attaches
+- [ ] On completion the popup shows "Hoàn tất! Tìm thấy N sản phẩm" and the CSV has been downloaded
+
+## Test case 3 — CSV content
+
+- [ ] Open the CSV in Excel/Sheets: headers match SPEC.md exactly, in order
+- [ ] Every row satisfies `Landed Cost (₫) < Shopee Price (₫)`
+- [ ] Vietnamese characters render correctly (UTF-8 with BOM)
+- [ ] URLs are clickable and point at the right products
+
+## Test case 4 — Failure handling
+
+- [ ] Press "Dừng" mid-scan → a partial CSV is downloaded with a correct scanned count
+- [ ] Kill the helper mid-scan → the popup shows a clear error and can retry after restart
+- [ ] Sign out of 1688 in Chrome mid-scan → the scan aborts with `AUTH_REQUIRED` instead of grinding through the remaining products, reports the reason, and still offers the partial CSV
+- [ ] Point the extension at a category with fewer than 30 products → completes without error
+- [ ] A product with a missing image or price is skipped, counted as an error, and does not stop the scan
+
+## Test case 5 — Performance
+
+- [ ] A 90-product category completes within the 30-minute timeout (target: well under it)
+- [ ] Helper memory stays reasonable across a full scan

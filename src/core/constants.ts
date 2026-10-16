@@ -1,0 +1,53 @@
+// Shared constants for the extension (and, for the scan limits, the helper).
+// Pure data: no `chrome.*`, no DOM, no side effects.
+
+import type { ScanConfig } from "./types.js";
+
+export const CONSTANTS = {
+  // Scan limits — fixed for the MVP, deliberately not user-configurable.
+  DEFAULT_MAX_PAGES: 3,
+  DEFAULT_MAX_PRODUCTS_PER_PAGE: 30,
+  DEFAULT_CNY_VND_RATE: 3500,
+  DEFAULT_MARKUP_MULTIPLIER: 3,
+  MAX_RESULTS_PER_SEARCH: 10,
+  PARALLEL_CONTEXTS: 5,
+
+  // Local helper process. 127.0.0.1, not "localhost": Chrome may resolve
+  // localhost to IPv6 while the helper binds IPv4 loopback.
+  HELPER_BASE_URL: "http://127.0.0.1:3001",
+  HELPER_REQUEST_TIMEOUT_MS: 30_000,
+  HELPER_HEALTH_CHECK_MS: 5_000,
+  HELPER_SCAN_TIMEOUT_MS: 30 * 60 * 1000,
+  HELPER_ENDPOINTS: {
+    STATUS: "/api/status",
+    SESSION_CHECK: "/api/session-check",
+    SCAN_CATEGORY: "/api/scan-category",
+    SCAN_PROGRESS: (scanId: string) => `/api/scan/${scanId}/progress`,
+    SCAN_RESULT: (scanId: string) => `/api/scan/${scanId}/result`,
+    SCAN_STOP: (scanId: string) => `/api/scan/${scanId}/stop`,
+  },
+
+  // Shopee and 1688 — used to collect the handed-off cookie jars, and to tell
+  // whether the active tab is a category page worth scanning.
+  SHOPEE_COOKIE_DOMAINS: ["shopee.vn", "shopee.com.vn"],
+  SIXTEEN_EIGHT_EIGHT_COOKIE_DOMAINS: ["1688.com"],
+  SIXTEEN_EIGHT_EIGHT_SIGN_IN_URL: "https://login.1688.com",
+  SHOPEE_CATEGORY_URL_MARKERS: ["-cat.", "/cat.", "all_categories"],
+
+  // How often the background worker asks the helper for progress.
+  SCAN_POLL_MS: 2_000,
+
+  // chrome.storage.session key holding the in-flight scan, so the popup can
+  // re-attach after it has been closed and reopened.
+  STORAGE_KEYS: {
+    SCAN_STATE: "scanState",
+  },
+} as const;
+
+/** Default scan configuration built from the constants above. */
+export const DEFAULT_SCAN_CONFIG: ScanConfig = {
+  maxPages: CONSTANTS.DEFAULT_MAX_PAGES,
+  maxProductsPerPage: CONSTANTS.DEFAULT_MAX_PRODUCTS_PER_PAGE,
+  cnyVndRate: CONSTANTS.DEFAULT_CNY_VND_RATE,
+  markupMultiplier: CONSTANTS.DEFAULT_MARKUP_MULTIPLIER,
+};

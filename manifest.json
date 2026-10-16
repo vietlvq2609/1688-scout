@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "1688 Scout",
+  "version": "0.1.0",
+  "description": "Quét danh mục Shopee và tìm sản phẩm 1688 có giá nhập tốt hơn.",
+  "action": {
+    "default_title": "1688 Scout",
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "permissions": ["cookies", "downloads", "storage"],
+  "host_permissions": [
+    "*://shopee.vn/*",
+    "*://*.shopee.vn/*",
+    "*://shopee.com.vn/*",
+    "*://*.shopee.com.vn/*",
+    "*://1688.com/*",
+    "*://*.1688.com/*",
+    "http://localhost:3001/*",
+    "http://127.0.0.1:3001/*"
+  ],
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  }
+}
