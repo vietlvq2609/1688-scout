@@ -28,6 +28,15 @@ export const SIXTEEN_EIGHT_EIGHT_SESSION_CHECK_URL = 'https://i.1688.com/';
 /** How long the session check waits for that page before giving up. */
 export const SESSION_CHECK_TIMEOUT_MS = 30_000;
 
+/** Concurrent 1688 searches within one scan. */
+export const PARALLEL_CONTEXTS = 5;
+
+/** 1688 offers parsed per search (the first is the best match). */
+export const MAX_RESULTS_PER_SEARCH = 10;
+
+/** Auto-stop a scan that has run this long (30 minutes). */
+export const SCAN_TIMEOUT_MS = 30 * 60 * 1000;
+
 /** Error body shape used by every helper HTTP error response. */
 export function httpErrorPayload(code: string, message: string): {
   error: { code: string; message: string };
