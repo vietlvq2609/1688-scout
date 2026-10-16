@@ -8,11 +8,17 @@ importers:
 
   .:
     devDependencies:
+      chrome-types:
+        specifier: ^0.1.456
+        version: 0.1.456
       typescript:
         specifier: ^5.6.0
         version: 5.9.3
 
 packages:
+
+  chrome-types@0.1.456:
+    resolution: {integrity: sha512-vs8rAIb2RcTtheP5Abe9wP9x1c1ZK7049gxyhxU74AaVTceugvkFfuZsjp7cPNm/6Js/zV6aAH5NaO9XoIY2oQ==}
 
   typescript@5.9.3:
     resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
@@ -20,5 +26,7 @@ packages:
     hasBin: true
 
 snapshots:
+
+  chrome-types@0.1.456: {}
 
   typescript@5.9.3: {}
