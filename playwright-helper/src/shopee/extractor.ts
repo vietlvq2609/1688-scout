@@ -13,7 +13,7 @@ import type { Page } from 'playwright';
 import { parseHTML } from 'linkedom';
 import type { ShopeeCategoryProduct } from '../../../src/core/types.js';
 
-export const SHOPEE_CARD_SELECTOR = 'li[data-sqe="item"], [data-testid="item-card"]';
+export const SHOPEE_CARD_SELECTOR = 'li[data-sqe="item"] .shopee_ic';
 
 const SHOPEE_ORIGIN = 'https://shopee.vn';
 const NAV_TIMEOUT_MS = 45_000;
